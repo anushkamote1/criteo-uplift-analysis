@@ -224,3 +224,5 @@ __marimo__/
 .venv/
 .env
 .DS_Store
+
+data/*.parquet

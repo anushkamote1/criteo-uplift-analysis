@@ -39,3 +39,27 @@ Compared by treatment assignment (intent-to-treat), not exposure.
 **Takeaway:** Ads caused a clear, statistically significant increase in both visits and conversions. The conversion lift is larger in relative terms (+59% vs. +27%), so ads didn't just bring more people to the site; the visitors they brought were also more likely to convert (6.4% of treated visitors converted vs. 5.1% of control visitors). The conversion CI is wider because conversions are rare.
 
 **Note on p-values:** Python shows 0.0 because the true value is smaller than the computer can represent (z = 65 and 28). Reported as p < 0.001.
+
+## Step 5: Power analysis
+
+Settings: alpha = 0.05 (two-sided), power = 80%, 85/15 split.
+
+**Visits**
+- Effect size (Cohen's h): 0.051, small by convention but typical for ad effects
+- MDE: 0.040 pts; observed lift (1.03 pts) is about 26x the MDE
+- Users needed to detect the observed lift: about 23,800
+
+**Conversions**
+- Effect size (Cohen's h): 0.023
+- MDE: 0.009 pts; observed lift (0.115 pts) is about 12x the MDE
+- Users needed to detect the observed lift: about 114,800
+
+**Sample size vs. lift size (visits)**
+- 1% relative lift: about 15.6M users, more than this whole experiment
+- 5% relative lift: about 635,000 users
+- 10% relative lift: about 162,000 users
+- 27% relative lift (observed): about 23,800 users
+
+**Takeaway:** The experiment was heavily overpowered for the average effect. The overall lift could have been detected with about 24,000 users for visits and 115,000 for conversions. The 14M scale matters for the next step: estimating uplift for smaller user segments, where effects vary and each slice has far fewer users. Required sample size grows with the inverse square of the lift, so halving the lift roughly quadruples the users needed.
+
+Did not report observed (post-hoc) power, since it is a direct function of the p-value and adds no information.

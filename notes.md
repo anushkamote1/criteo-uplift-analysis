@@ -63,3 +63,26 @@ Settings: alpha = 0.05 (two-sided), power = 80%, 85/15 split.
 **Takeaway:** The experiment was heavily overpowered for the average effect. The overall lift could have been detected with about 24,000 users for visits and 115,000 for conversions. The 14M scale matters for the next step: estimating uplift for smaller user segments, where effects vary and each slice has far fewer users. Required sample size grows with the inverse square of the lift, so halving the lift roughly quadruples the users needed.
 
 Did not report observed (post-hoc) power, since it is a direct function of the p-value and adds no information.
+
+## Step 6: Uplift model
+
+**Method:** T-learner with two XGBoost classifiers (300 trees, depth 5), one trained on treated users and one on control. Uplift = P(visit | ads) − P(visit | no ads). Trained on a 3M-row random sample (Bernoulli 21.5%, seed 42; 2.1M train / 900K test, stratified by treatment and outcome). Evaluated on the held-out test set with Qini curves, since uplift can't be checked with accuracy or AUC. Compared against a standard response model that predicts who visits, ignoring treatment.
+
+**Results (900K held-out users)**
+
+| Share targeted | Uplift model keeps | Response model keeps |
+|---|---|---|
+| Top 10% | 55% of incremental visits | 47% |
+| Top 20% | 76% | 73% |
+| Top 30% | 83% | 85% |
+| Top 50% | 92% | 95% |
+
+- Qini coefficient: uplift model 2,636 vs. response model 2,641 (effectively tied overall)
+- Both models far outperform random targeting, which would keep only 10% of incremental visits at 10% targeted
+
+**Takeaway:** Ad effects are highly concentrated: targeting just the top 20% of users captures about three quarters of the incremental visits. The uplift model has a clear edge at tight budgets (55% vs. 47% of incremental visits in the top 10%), which is where targeting decisions matter most. Past 30%, the two models perform about the same, meaning in this data the users most likely to visit are largely the same users ads persuade. Recommendation: use the uplift model when the budget only covers a small share of users; for broad campaigns, either model works.
+
+**Limitations**
+- The T-learner's control model trains on only ~315K users, so individual uplift scores are noisy (range −0.55 to +0.59). Rankings are more reliable than individual scores.
+- Mean predicted uplift (0.76 pts) is a little below the measured lift (1.03 pts), so the model is conservative on absolute effect size.
+- Modeled visits only; conversions are too rare for a stable individual-level model.

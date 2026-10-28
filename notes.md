@@ -86,3 +86,29 @@ Did not report observed (post-hoc) power, since it is a direct function of the p
 - The T-learner's control model trains on only ~315K users, so individual uplift scores are noisy (range −0.55 to +0.59). Rankings are more reliable than individual scores.
 - Mean predicted uplift (0.76 pts) is a little below the measured lift (1.03 pts), so the model is conservative on absolute effect size.
 - Modeled visits only; conversions are too rare for a stable individual-level model.
+
+## Step 7: Targeting and budget analysis
+
+Users in the 900K test set ranked by predicted uplift and split into 10 equal deciles (~90,200 users each). Actual lift measured within each decile (treated vs. control), so results reflect what really happened, not model predictions.
+
+**Lift by decile**
+- Decile 1 (most persuadable): +5.52 pts (95% CI: 4.71 to 6.32), about 5x the average lift
+- Decile 2: +1.05 pts (95% CI: 0.60 to 1.49), about the average lift
+- Deciles 3 to 9: between −0.02 and +0.26 pts, effectively zero
+- Decile 10: +0.42 pts (95% CI: −0.08 to 0.92), not significant
+- The model is well calibrated where it matters: predicted uplift in deciles 1 and 2 (6.9 and 1.1 pts) closely matches measured lift (5.5 and 1.05 pts). Its negative predictions for the bottom deciles did not hold up; those users show no measurable effect either way.
+
+**Targeting scenarios (uplift model)**
+
+| Target | Ad spend cut | Visit effect kept | Cost per extra visit vs. blanket |
+|---|---|---|---|
+| Top 10% | 90% | 72% | 0.14 (86% cheaper) |
+| Top 20% | 80% | 86% | 0.23 (77% cheaper) |
+| Top 30% | 70% | 88% | 0.34 (66% cheaper) |
+| Top 50% | 50% | 92% | 0.54 (46% cheaper) |
+
+**Uplift vs. response model:** The uplift model is clearly better at the tightest budget (top 10%: 72% vs. 65% of the effect kept). From 20% onward, the response model keeps slightly more, consistent with the Qini results in Step 6.
+
+**Recommendation:** Target the top 20% of users by predicted uplift. Per 1M users, this shows ads to 200,000 instead of 1,000,000 while keeping about 8,900 of the ~10,340 incremental visits, making each extra visit about 77% cheaper than blanket targeting. Expanding to 30% adds only 2 more points of effect for 50% more spend.
+
+**Assumptions:** No cost data in the dataset, so savings are expressed as share of impressions cut, assuming cost scales with users reached. Results come from a 900K-user held-out set.

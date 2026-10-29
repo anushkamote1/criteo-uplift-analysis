@@ -112,3 +112,7 @@ Users in the 900K test set ranked by predicted uplift and split into 10 equal de
 **Recommendation:** Target the top 20% of users by predicted uplift. Per 1M users, this shows ads to 200,000 instead of 1,000,000 while keeping about 8,900 of the ~10,340 incremental visits, making each extra visit about 77% cheaper than blanket targeting. Expanding to 30% adds only 2 more points of effect for 50% more spend.
 
 **Assumptions:** No cost data in the dataset, so savings are expressed as share of impressions cut, assuming cost scales with users reached. Results come from a 900K-user held-out set.
+
+   ## Step 8: Dashboard
+   - Tableau Public: https://public.tableau.com/app/profile/anushka.mote/viz/CriteoUpliftAnalysis/WhoshouldCriteoshowadstoUpliftanalysisofa14M-userexperiment?publish=yes
+   - Panels: headline lift, lift by uplift decile (with 95% CIs), Qini curves, interactive targeting slider
